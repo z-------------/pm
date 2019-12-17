@@ -1,0 +1,8 @@
+[package]
+name = "pm"
+version = "0.0.0"
+authors = ["Zack Guard <zacharyguard@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+which = "3.1.0"
