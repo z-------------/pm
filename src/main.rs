@@ -10,11 +10,13 @@ enum PmType {
     Pnpm,
 }
 
-fn get_pm_name(pm_type: PmType) -> String {
-    match pm_type {
-        PmType::Npm => String::from("npm"),
-        PmType::Yarn => String::from("yarn"),
-        PmType::Pnpm => String::from("pnpm"),
+impl PmType {
+    fn get_name(self) -> String {
+        match self {
+            PmType::Npm => String::from("npm"),
+            PmType::Yarn => String::from("yarn"),
+            PmType::Pnpm => String::from("pnpm"),
+        }
     }
 }
 
@@ -69,7 +71,7 @@ fn main() -> io::Result<()> {
     match detect_pm(dir_it)? {
         Some(pm_type) => {
             let args: Vec<String> = env::args().collect();
-            let ecode = run_pm(get_pm_name(pm_type), args[1..].to_vec(), cwd);
+            let ecode = run_pm(pm_type.get_name(), args[1..].to_vec(), cwd);
             process::exit(ecode.code().expect("Failed to get child exit code"));
         },
         None => {
