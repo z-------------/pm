@@ -18,7 +18,7 @@ fn get_pm_name(pm_type: PmType) -> String {
     }
 }
 
-fn detect_pm(filename: String) -> Option<PmType> {
+fn filename_match(filename: String) -> Option<PmType> {
     match filename.as_ref() {
         "yarn.lock" => Some(PmType::Yarn),
         "pnpm-lock.yaml" => Some(PmType::Pnpm),
@@ -27,12 +27,12 @@ fn detect_pm(filename: String) -> Option<PmType> {
     }
 }
 
-fn get_pm_type(dir: fs::ReadDir) -> io::Result<Option<PmType>> {
+fn detect_pm(dir: fs::ReadDir) -> io::Result<Option<PmType>> {
     for entry in dir {
         let entry = entry?;
         match entry.file_name().to_str() {
             Some(filename) => {
-                let pm = detect_pm(String::from(filename));
+                let pm = filename_match(String::from(filename));
                 match pm {
                     Some(_) => return Ok(pm),
                     None => continue,
@@ -66,7 +66,7 @@ fn main() -> io::Result<()> {
     let cwd = env::current_dir()?;
     let dir = cwd.as_path();
     let dir_it = fs::read_dir(dir)?;
-    match get_pm_type(dir_it)? {
+    match detect_pm(dir_it)? {
         Some(pm_type) => {
             let args: Vec<String> = env::args().collect();
             let ecode = run_pm(get_pm_name(pm_type), args[1..].to_vec(), cwd);
