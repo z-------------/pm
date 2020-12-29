@@ -20,8 +20,8 @@ impl PmType {
     }
 }
 
-fn filename_match(filename: String) -> Option<PmType> {
-    match filename.as_ref() {
+fn filename_match(filename: &str) -> Option<PmType> {
+    match filename {
         "yarn.lock" => Some(PmType::Yarn),
         "pnpm-lock.yaml" => Some(PmType::Pnpm),
         "package-lock.json" => Some(PmType::Npm),
@@ -34,7 +34,7 @@ fn detect_pm(dir: fs::ReadDir) -> io::Result<Option<PmType>> {
         let entry = entry?;
         match entry.file_name().to_str() {
             Some(filename) => {
-                let pm = filename_match(String::from(filename));
+                let pm = filename_match(filename);
                 match pm {
                     Some(_) => return Ok(pm),
                     None => continue,
